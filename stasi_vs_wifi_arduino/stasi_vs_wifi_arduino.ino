@@ -1,5 +1,5 @@
-//The time the sensor gets to calibrate(10-60 secs)
-int calibrationTime = 30;       
+//The time the sensor gets to calibrate
+int calibrationTime = 10;       
  
 //The time when the sensor outputs a low impulse
 long unsigned int lowIn;        
