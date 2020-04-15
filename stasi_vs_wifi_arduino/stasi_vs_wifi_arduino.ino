@@ -1,3 +1,4 @@
+///////////////// 1. LIGHTS WITH MOTION SENSOR /////////////////
 //The time the sensor gets to calibrate
 int calibrationTime = 10;       
  
@@ -14,8 +15,6 @@ boolean takeLowTime;
 int pirPin = 3;
 int ledPin = 13;
  
- 
-///////////////// SETUP /////////////////
 void setup(){
   Serial.begin(9600);
   pinMode(pirPin, INPUT);
@@ -33,7 +32,6 @@ void setup(){
     delay(50);
   }
  
-///////////////// LOOP /////////////////
 void loop(){
 
      //If there has been detected motion
@@ -71,3 +69,45 @@ void loop(){
            }
        }
   }
+  
+///////////////// 2. DOOR OPEN/CLOSING WITH SERVO MOTOR /////////////////
+#include <Servo.h>
+
+const byte button = 4; //button pin, connect to ground to move servo
+
+Servo servo;
+
+boolean buttonState = HIGH;
+boolean lastButtonState = HIGH;
+int pos = 0;
+
+void setup()
+{
+   pinMode(button, INPUT_PULLUP); //arduino monitor pin state
+   servo.attach(9); //pin for servo control signal
+}
+
+void loop()
+{
+   buttonState = digitalRead(button);
+   if (buttonState != lastButtonState)
+   {
+      if (buttonState == LOW)
+      {
+        //Open the door
+        for(pos = 80; pos <= 180; pos +=1){
+          servo.write(pos);
+          delay(15);
+        }
+         //A brake between opening en closing the door
+         delay(3000);  
+
+        //Closing the door
+        for(pos = 180; pos >= 80; pos -=1){
+          servo.write(pos);
+          delay(15);
+        }
+      } 
+      lastButtonState = buttonState;
+   }
+}
