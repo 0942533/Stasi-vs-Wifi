@@ -132,7 +132,6 @@ void loop(){
 //  client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
 //  client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");
   client.println("<br><br>");  
-  // Places the security cam on the page
 //  client.print("<iframe width=640 height=360 src=");
 //  client.print("http://192.168.1.101/picture/2/frame/"); 
 //  client.println(" frameborder=0 allowfullscreen></iframe>");
