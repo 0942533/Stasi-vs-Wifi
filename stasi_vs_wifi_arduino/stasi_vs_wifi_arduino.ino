@@ -1,10 +1,11 @@
 ///////////////// 1. LIGHTS WITH MOTION SENSOR /////////////////
 // Include Wifi functions
-#include <ESP8266WiFi.h>
+#include <ESP8266WiFi.h>.
+#include <Servo.h>
 
 // to connect to the WiFi
-const char* ssid = "wifiname";
-const char* password = "wifipassword";
+const char* ssid = "VAPRODUCTIONS-2G";
+const char* password = "BorstelBaard-2G";
  
 WiFiServer server(80);
 
@@ -23,12 +24,22 @@ boolean takeLowTime;
  
 int pirPin = 12; //Pin D6 for Sensor
 int ledPin = 13; //Pin D7 for Led
+
+const byte button = 5; //D1 button pin, connect to ground to move servo
+
+Servo servo;
+
+boolean buttonState = HIGH;
+boolean lastButtonState = HIGH;
+int pos = 0;
  
 void setup(){
   Serial.begin(115200);
   pinMode(pirPin, INPUT);
   pinMode(ledPin, OUTPUT);
   digitalWrite(pirPin, LOW);
+   pinMode(button, INPUT_PULLUP); //arduino monitor pin state
+   servo.attach(4); //pin for servo control signal
 
   // Connect to WiFi network
   Serial.println();
@@ -128,7 +139,38 @@ void loop(){
            delay(50);
            }
        }
+
        client.println("<br><br>");
+
+       client.println("Door is now: ");
+
+        buttonState = digitalRead(button);
+   if (buttonState != lastButtonState)
+   {
+     client.print("Open");
+      if (buttonState == LOW)
+      {
+       
+        //Open the door
+        for(pos = 80; pos <= 180; pos +=1){
+          servo.write(pos);
+          delay(15);
+          
+        }
+         //A brake between opening en closing the door
+         delay(3000);  
+
+        //Closing the door
+        for(pos = 180; pos >= 80; pos -=1){
+          servo.write(pos);
+          delay(15);
+        }
+      } 
+      lastButtonState = buttonState;
+   } else {
+     client.print("Closed");
+    }
+       
 //  client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
 //  client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");
   client.println("<br><br>");  
@@ -140,45 +182,3 @@ void loop(){
   delay(1);
  
   }
-  
-/////////////////// 2. DOOR OPEN/CLOSING WITH SERVO MOTOR /////////////////
-//#include <Servo.h>
-//
-//const byte button = 4; //button pin, connect to ground to move servo
-//
-//Servo servo;
-//
-//boolean buttonState = HIGH;
-//boolean lastButtonState = HIGH;
-//int pos = 0;
-//
-//void setup()
-//{
-//   pinMode(button, INPUT_PULLUP); //arduino monitor pin state
-//   servo.attach(9); //pin for servo control signal
-//}
-//
-//void loop()
-//{
-//   buttonState = digitalRead(button);
-//   if (buttonState != lastButtonState)
-//   {
-//      if (buttonState == LOW)
-//      {
-//        //Open the door
-//        for(pos = 80; pos <= 180; pos +=1){
-//          servo.write(pos);
-//          delay(15);
-//        }
-//         //A brake between opening en closing the door
-//         delay(3000);  
-//
-//        //Closing the door
-//        for(pos = 180; pos >= 80; pos -=1){
-//          servo.write(pos);
-//          delay(15);
-//        }
-//      } 
-//      lastButtonState = buttonState;
-//   }
-//}
